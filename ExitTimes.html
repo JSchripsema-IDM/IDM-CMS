@@ -200,7 +200,65 @@
 
   <div class="section" id="exittimes">
 <h1>ExitTimes<a class="headerlink" href="#exittimes" title="Permalink to this headline">¶</a></h1>
-<p>Exit Times</p>
+<p>ExitTimes <a class="footnote-reference" href="#id3" id="id1">[1]</a> is a solver developed for computing the time it takes for a specified event to occur.  For example, you may want to compute the time it takes for the infectious population to reach zero.  This method will usually be faster than the standard stochastic simulation algorithm. The method attempts to group the propensities into sets, approximate their values, and sample the final time from multiple gamma distributions. See <a class="footnote-reference" href="#id3" id="id2">[1]</a> for a detailed derivation.</p>
+<p>ExitTimes can be supplied with two parameters: <code class="docutils literal"><span class="pre">epsilon</span></code> and <code class="docutils literal"><span class="pre">verbose</span></code>. However, if the user does not supply these values, default values will be used.  It is recommended to not change the default values unless there is reason to do so.  If one wishes to speed up the simulation time, the <code class="docutils literal"><span class="pre">epsilon</span></code> parameter should be made larger.  Note however that the accuracy of the method will decrease if <code class="docutils literal"><span class="pre">epsilon</span></code> is made larger.</p>
+<p><strong>.json ExitTimes file template</strong></p>
+<div class="highlight-JSON"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;duration&quot;</span> <span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="nt">&quot;runs&quot;</span>     <span class="p">:</span> <span class="mi">20000</span><span class="p">,</span>
+    <span class="nt">&quot;solver&quot;</span>   <span class="p">:</span> <span class="s2">&quot;et&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;et&quot;</span> <span class="p">:</span> <span class="p">{</span>
+	      <span class="nt">&quot;verbose&quot;</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+	      <span class="nt">&quot;epsilon&quot;</span> <span class="p">:</span> <span class="mf">0.2</span>
+    <span class="p">}</span> 
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>.emodl ExitTimes file template</strong></p>
+<div class="highlight-lisp"><div class="highlight"><pre><span></span><span class="c1">; sir model with exit condition</span>
+
+<span class="p">(</span><span class="nb">import</span> <span class="p">(</span><span class="nv">rnrs</span><span class="p">)</span> <span class="p">(</span><span class="nv">emodl</span> <span class="nv">cmslib</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nv">start-model</span> <span class="s">&quot;sir-exit&quot;</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nv">locale</span> <span class="nv">site-a</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">set-locale</span> <span class="nv">site-a</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nv">species</span> <span class="nv">S</span> <span class="mi">95</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">species</span> <span class="nv">I</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">species</span> <span class="nv">R</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nv">observe</span> <span class="nv">Susceptible</span> <span class="nv">S</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">observe</span> <span class="nv">Infected</span> <span class="nv">I</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">observe</span> <span class="nv">Recovered</span> <span class="nv">R</span><span class="p">)</span>
+
+
+<span class="p">(</span><span class="nv">param</span> <span class="nv">beta</span> <span class="mf">0.015</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">param</span> <span class="nv">gamma</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nv">reaction</span> <span class="nv">S-&gt;I</span> <span class="p">(</span><span class="nv">S</span><span class="p">)</span> <span class="p">(</span><span class="nv">I</span><span class="p">)</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">beta</span> <span class="nv">S</span> <span class="nv">I</span><span class="p">))</span>
+<span class="p">(</span><span class="nv">reaction</span> <span class="nv">I-&gt;R</span> <span class="p">(</span><span class="nv">I</span><span class="p">)</span> <span class="p">(</span><span class="nv">R</span><span class="p">)</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">gamma</span> <span class="nv">I</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nv">bool</span> <span class="nv">exitTimeEvent</span> <span class="p">(</span><span class="nv">==</span> <span class="nv">R</span> <span class="mi">85</span><span class="p">)</span> <span class="p">)</span>
+
+
+<span class="p">(</span><span class="nv">end-model</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>.json syntax for ExitTimes</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">epsilon</span></code> (optional)</dt>
+<dd><code class="docutils literal"><span class="pre">epsilon</span></code>  takes a float between 0 and 1 and determines the error of the approximation.  A value of zero is equivalent to a standard stochastic simulation and a value of 1 is the most aggressive speedup (and largest error).  A default value of 0.2 is used which can be overridden by the user.  We recommend not changing this value.</dd>
+<dt><code class="docutils literal"><span class="pre">verbose</span></code> (optional)</dt>
+<dd><code class="docutils literal"><span class="pre">verbose</span></code> takes a true or false flag. If true, extra information is printed to the command line, which can be useful for debugging or testing the solver.</dd>
+</dl>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> <cite>Basil Bayati, “A Method to Calculate the Exit Time in Stochastic Simulations”. https://arxiv.org/abs/1512.04468</cite></td></tr>
+</tbody>
+</table>
 </div>
 
 

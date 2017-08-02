@@ -200,7 +200,54 @@
 
   <div class="section" id="transportssa">
 <h1>TransportSSA<a class="headerlink" href="#transportssa" title="Permalink to this headline">¶</a></h1>
-<p>Transport SSA</p>
+<p>TransportSSA (aka Inhomogeneous Stochastic Simulation Algorithm or ISSA) <a class="footnote-reference" href="#id2" id="id1">[1]</a>, is a solver developed for simulating diffusion processes in compartmental models. Diffusion events are modeled as particles that transition to neighboring locales. The ISSA method is ideally suited for systems with a large number of particles, i.e. 1000 particles or more at each locale.</p>
+<p>In terms of the errors of the diffusion solvers, they are all first-order in time and second-order in space, and are therefore similar to using one of the leaping algorithms for the simulation of diffusion processes.  The diffusion methods however execute single reaction events per time-step, as opposed to leaping algorithms that execute multiple reaction events per time-step, and are therefore useful if the modeler chooses to capture detailed events.  Note that all of the diffusion solvers do not need explicit parameter specifications and will automatically use default parameters.</p>
+<p><strong>.json TSSA file template</strong></p>
+<div class="highlight-JSON"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;duration&quot;</span> <span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+    <span class="nt">&quot;runs&quot;</span>   <span class="p">:</span> <span class="mi">512</span><span class="p">,</span>
+    <span class="nt">&quot;solver&quot;</span> <span class="p">:</span> <span class="s2">&quot;tssa&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;tssa&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;epsilon&quot;</span> <span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="nt">&quot;greensFunctionIterations&quot;</span> <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="nt">&quot;verbose&quot;</span> <span class="p">:</span> <span class="kc">false</span>
+    <span class="p">}</span> 
+<span class="p">}</span> 
+</pre></div>
+</div>
+<p><strong>A portion of an .emodl file is included below to show how diffusive events are specified for TSSA, DFSP, OTSSA</strong></p>
+<div class="highlight-lisp"><div class="highlight"><pre><span></span><span class="p">(</span><span class="nv">locale</span> <span class="nv">site-1</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">set-locale</span> <span class="nv">site-1</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">species</span> <span class="nv">A::1</span> <span class="mi">1000</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nv">locale</span> <span class="nv">site-2</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">set-locale</span> <span class="nv">site-2</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">species</span> <span class="nv">A::2</span> <span class="mi">1000</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nv">reaction</span> <span class="nv">A1-&gt;A2</span> <span class="p">(</span><span class="nv">A::1</span><span class="p">)</span> <span class="p">(</span><span class="nv">A::2</span><span class="p">)</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">D</span> <span class="nv">A::1</span><span class="p">))</span>
+<span class="p">(</span><span class="nv">reaction</span> <span class="nv">A2-&gt;A1</span> <span class="p">(</span><span class="nv">A::2</span><span class="p">)</span> <span class="p">(</span><span class="nv">A::1</span><span class="p">)</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">D</span> <span class="nv">A::2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal"><span class="pre">D</span></code> represents the diffusion coefficient and that the reactions specify transitions of species A to neighboring locales.</p>
+<p><strong>.json syntax for TSSA</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">epsilon</span></code> (optional)</dt>
+<dd><code class="docutils literal"><span class="pre">epsilon</span></code>  takes a float greater than zero 0 and much less than 1 and determines the error of the approximation.  A value of close to zero is equivalent to a standard stochastic simulation and a value close to 1 is the most aggressive speedup (and largest error).  A default value of 0.01 is used which can be overridden by the user.  We recommend not changing this value.</dd>
+<dt><code class="docutils literal"><span class="pre">verbose</span></code> (optional)</dt>
+<dd><code class="docutils literal"><span class="pre">verbose</span></code> takes a true or false flag. If true, extra information is printed to the command line, which can  be useful for debugging or testing the solver.</dd>
+<dt><code class="docutils literal"><span class="pre">greensFunctionIterations</span></code> (optional for ISSA)</dt>
+<dd><code class="docutils literal"><span class="pre">greensFunctionIterations</span></code> takes an integer value between 1 and infinity and is the number of iterations used to compute the fundamental solution of the diffusion equation. The default value is 100.</dd>
+</dl>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><ol class="first last upperalpha simple" start="19">
+<li>Lampoudi, D.T. Gillespie, &amp; L.R. Petzold, “The Multinomial Simulation Algorithm for Discrete Stochastic Simulation of Reaction-Diffusion Systems”. Journal of Chemical Physics, 2009.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
 </div>
 
 
