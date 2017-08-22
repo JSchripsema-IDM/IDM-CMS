@@ -101,6 +101,7 @@
             
             
               <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction-modeling.html">Introduction to compartmental modeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cms-installation.html">CMS installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="introduction-software.html">Introduction to the software</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="emodl.html">EMODL – model language for an input model file</a></li>
@@ -110,7 +111,6 @@
 <li class="toctree-l2"><a class="reference internal" href="output-files.html">Output files</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="introduction-modeling.html">Introduction to compartmental modeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto-software.html">How to use the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
@@ -180,7 +180,29 @@
 
   <div class="section" id="random-number-library">
 <h1>Random number library<a class="headerlink" href="#random-number-library" title="Permalink to this headline">¶</a></h1>
-<p>Library text TBD.</p>
+<p>CMS supports four different pseudo-random number generators. These can be specified with “RNG” : { “type”: <em>prng-name</em> } in the configuration file. <code class="code docutils literal"><span class="pre">AESCOUNTER</span></code> is the default prng unless not supported in hardware in which case the compartmental modeling software falls back to <code class="code docutils literal"><span class="pre">PSEUDODES</span></code>.</p>
+<p>The configuration file may optionally include the <code class="code docutils literal"><span class="pre">prng_seed</span></code> and <code class="code docutils literal"><span class="pre">prng_index</span></code> keys. These values are used to initialize the pseudo-random number generator. They both default to 0. <code class="code docutils literal"><span class="pre">prng_seed</span></code> and <code class="code docutils literal"><span class="pre">prng_index</span></code> together determine the initial state of the pseudo-random number generator. <code class="code docutils literal"><span class="pre">prng_index</span></code> can be used to identify different runs of an experiment or to seed different instantiations of the compartmental modeling software across multiple processors.</p>
+<div class="highlight-JSON"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;PRNG&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;VANILLA|RANDLIB|PSEUDODES|AESCOUNTER&quot;</span> <span class="p">},</span>
+    <span class="nt">&quot;prng_seed&quot;</span> <span class="p">:</span> <span class="mi">2017</span><span class="p">,</span>
+    <span class="nt">&quot;prng_index&quot;</span> <span class="p">:</span> <span class="mi">42</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>VANILLA</strong></p>
+<p>The <code class="code docutils literal"><span class="pre">VANILLA</span></code> prng is based on the .NET <a class="reference external" href="https://msdn.microsoft.com/en-us/library/system.random(v=vs.110).aspx">Random</a> class.</p>
+<p><strong>RANDLIB</strong></p>
+<p>The <code class="code docutils literal"><span class="pre">RANDLIB</span></code> prng is based on the pseudo-random number generator based on a combination of multiplicative linear congruential generators proposed by Pierre L’Ecuyer <a class="footnote-reference" href="#id2" id="id1">[1]</a> and used in numerous scientific computing libraries.</p>
+<p><strong>PSEUDODES</strong></p>
+<p>The <code class="code docutils literal"><span class="pre">PSEUDODES</span></code> prng is based on the entropy generating step of the Data Encryption Standard published by NIST. The algorithm is <code class="docutils literal"><span class="pre">psdes</span></code> described in “<a class="reference external" href="http://numerical.recipes/">Numerical Recipes in C</a>.”</p>
+<p><strong>AESCOUNTER</strong></p>
+<p>The <code class="code docutils literal"><span class="pre">AESCOUNTER</span></code> prng is similar in concept to <code class="code docutils literal"><span class="pre">PSEUDODES</span></code> and is based on the entropy generating step of the <a class="reference external" href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf">Advanced Encryption Standard</a> published by NIST in 2001. The implementation uses <a class="reference external" href="http://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf">AES Counter Mode</a> to generate a stream a pseudo-random numbers from the given seed values.</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><a class="reference external" href="https://www.iro.umontreal.ca/~lecuyer/myftp/papers/cacm88.pdf">Efficient and Portable Combined Random Number Generators, Communications of the ACM, June 1988</a></td></tr>
+</tbody>
+</table>
 </div>
 
 
@@ -259,21 +281,7 @@
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-  
-<!-- Google analytics for IDM docs -->
- 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-87656833-3', 'auto');
-  ga('send', 'pageview');
-
-</script>
-
-
+   
 
 </body>
 </html>
