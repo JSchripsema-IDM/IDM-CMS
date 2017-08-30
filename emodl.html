@@ -180,7 +180,106 @@
 
   <div class="section" id="emodl-model-language-for-an-input-model-file">
 <h1>EMODL – model language for an input model file<a class="headerlink" href="#emodl-model-language-for-an-input-model-file" title="Permalink to this headline">¶</a></h1>
-<p>Introduction text TBD.</p>
+<p>Boiler plate:</p>
+<p><code class="docutils literal"><span class="pre">(import</span> <span class="pre">(rnrs)</span> <span class="pre">(emodl</span> <span class="pre">cmslib))</span></code>
+<code class="docutils literal"><span class="pre">(start-model</span> <span class="pre">&quot;modelname&quot;)</span></code>
+…
+<code class="docutils literal"><span class="pre">(end-model)</span></code></p>
+<p>Basic <code class="docutils literal"><span class="pre">EMODL</span></code> syntax:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">bool:</th><td class="field-body"><code class="docutils literal"><span class="pre">(bool</span> <span class="pre">name</span> <span class="pre">expression)</span></code> defines a function which returns a boolean value, used with <code class="docutils literal"><span class="pre">state-event</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">func:</th><td class="field-body"><code class="docutils literal"><span class="pre">(func</span> <span class="pre">name</span> <span class="pre">function)</span></code> defines a numeric function which is evaluated each time it is needed</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">locale:</th><td class="field-body"><code class="docutils literal"><span class="pre">(locale</span> <span class="pre">name)</span></code> creates a new geographic locale</td>
+</tr>
+<tr class="field-even field"><th class="field-name">observe:</th><td class="field-body"><code class="docutils literal"><span class="pre">(observe</span> <span class="pre">label</span> <span class="pre">function)</span></code> adds a variable or function to the list of observed items which are output from a simulation</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param:</th><td class="field-body"><code class="docutils literal"><span class="pre">(param</span> <span class="pre">name</span> <span class="pre">value)</span></code> defines a named, constant value</td>
+</tr>
+<tr class="field-even field"><th class="field-name">reaction:</th><td class="field-body"><code class="docutils literal"><span class="pre">(reaction</span> <span class="pre">name</span> <span class="pre">input-species</span> <span class="pre">output-species</span> <span class="pre">propensity-function)</span></code> defines a reaction or transition from one set of species to another</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">set-locale:</th><td class="field-body"><code class="docutils literal"><span class="pre">(set-local</span> <span class="pre">name)</span></code> sets the current geographic locale, new species will be associated with this geopgraphic locale, used with spatial solvers</td>
+</tr>
+<tr class="field-even field"><th class="field-name">species:</th><td class="field-body"><code class="docutils literal"><span class="pre">(species</span> <span class="pre">name</span> <span class="pre">identifier</span> <span class="pre">[initial</span> <span class="pre">population])</span></code> defines a unique species or population of particles or agents</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">time-event:</th><td class="field-body"><code class="docutils literal"><span class="pre">(time-event</span> <span class="pre">name</span> <span class="pre">time</span> <span class="pre">iterations</span> <span class="pre">(variable-value</span> <span class="pre">pairs))</span></code> defines an event to occur at a particular time, optionally with recurrence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">state-event:</th><td class="field-body"><code class="docutils literal"><span class="pre">(state-event</span> <span class="pre">name</span> <span class="pre">predicate</span> <span class="pre">(variable-value</span> <span class="pre">pairs))</span></code> defines an event to occur given a particular system state</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">json:</th><td class="field-body">declares an external JSON formatted file which can be referenced in species definitions, param definitions, and functions</td>
+</tr>
+</tbody>
+</table>
+<p>Mathematical operators and functions:</p>
+<p><em>Unary</em></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">negate:</th><td class="field-body"><code class="docutils literal"><span class="pre">(-</span> <span class="pre">x)</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">exponentiation:</th><td class="field-body"><code class="docutils literal"><span class="pre">(exp</span> <span class="pre">x)</span></code> returns e^x</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">logarithm:</th><td class="field-body"><code class="docutils literal"><span class="pre">(ln</span> <span class="pre">x)</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">sine:</th><td class="field-body"><code class="docutils literal"><span class="pre">(sin</span> <span class="pre">x)</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">cosine:</th><td class="field-body"><code class="docutils literal"><span class="pre">(cos</span> <span class="pre">x)</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">absolute:</th><td class="field-body"><code class="docutils literal"><span class="pre">(abs</span> <span class="pre">x)</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">floor:</th><td class="field-body"><code class="docutils literal"><span class="pre">(floor</span> <span class="pre">x)</span></code> returns the largest integer &lt;= x</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ceiling:</th><td class="field-body"><code class="docutils literal"><span class="pre">(ceil</span> <span class="pre">x)</span></code> returns the smallest integer &gt;= x</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">sqrt:</th><td class="field-body"><code class="docutils literal"><span class="pre">(sqrt</span> <span class="pre">x)</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Heaviside step:</th><td class="field-body"><code class="docutils literal"><span class="pre">(step</span> <span class="pre">x)</span></code> returns 1 if x &gt;= 0 else returns 0</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">empirical:</th><td class="field-body"><code class="docutils literal"><span class="pre">(empirical</span> <span class="pre">&quot;filename&quot;)</span></code> reads an empirically defined CDF from the file specified and returns a probability from the CFG based on a random number draw</td>
+</tr>
+</tbody>
+</table>
+<p><em>Binary</em></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">add:</th><td class="field-body"><code class="docutils literal"><span class="pre">(+</span> <span class="pre">x</span> <span class="pre">y)</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">subtract:</th><td class="field-body"><code class="docutils literal"><span class="pre">(-</span> <span class="pre">x</span> <span class="pre">y)</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">multiply:</th><td class="field-body"><code class="docutils literal"><span class="pre">(*</span> <span class="pre">x</span> <span class="pre">y)</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">divide:</th><td class="field-body"><code class="docutils literal"><span class="pre">(/</span> <span class="pre">x</span> <span class="pre">y)</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">power:</th><td class="field-body"><code class="docutils literal"><span class="pre">(^</span> <span class="pre">x</span> <span class="pre">y)</span></code> or <code class="docutils literal"><span class="pre">(pow</span> <span class="pre">x</span> <span class="pre">y)</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">minimum:</th><td class="field-body"><code class="docutils literal"><span class="pre">(min</span>&#160; <span class="pre">x</span> <span class="pre">y)</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">maximum:</th><td class="field-body"><code class="docutils literal"><span class="pre">(max</span> <span class="pre">x</span> <span class="pre">y)</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">uniform:</th><td class="field-body"><code class="docutils literal"><span class="pre">(uniform</span> <span class="pre">min</span> <span class="pre">max)</span></code> returns a value uniformly distributed between min and max based on a random number draw</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">normal:</th><td class="field-body"><code class="docutils literal"><span class="pre">(normal</span> <span class="pre">mean</span> <span class="pre">var)</span></code> or (gaussian mean var) returns a value from a normal distribution with the given mean and variance</td>
+</tr>
+</tbody>
+</table>
+<p><em>N-ary</em></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">add:</th><td class="field-body"><code class="docutils literal"><span class="pre">(+</span> <span class="pre">x</span> <span class="pre">y</span> <span class="pre">z</span> <span class="pre">...)</span></code> or <code class="docutils literal"><span class="pre">(sum</span> <span class="pre">x</span> <span class="pre">y</span> <span class="pre">z</span> <span class="pre">...)</span></code> returns the sum of all the given arguments</td>
+</tr>
+<tr class="field-even field"><th class="field-name">multiply:</th><td class="field-body"><code class="docutils literal"><span class="pre">(*</span> <span class="pre">x</span> <span class="pre">y</span> <span class="pre">z</span> <span class="pre">...)</span></code> returns the product of all the given arguments</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 
