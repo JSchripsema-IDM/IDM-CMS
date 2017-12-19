@@ -45,8 +45,8 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Compartmental Modeling (CMS)  documentation" href="index.html"/>
         <link rel="up" title="How to use the software" href="howto-software.html"/>
-        <link rel="next" title="Run simulations" href="run-simulations.html"/>
-        <link rel="prev" title="Create a network model" href="create-network-model.html"/>
+        <link rel="next" title="Create a spatial model" href="create-spatial-model.html"/>
+        <link rel="prev" title="How to use the software" href="howto-software.html"/>
 
 <link href="https://fonts.googleapis.com/css?family=Lato|Montserrat|Open+Sans" rel="stylesheet">
 
@@ -105,13 +105,11 @@
 <li class="toctree-l1"><a class="reference internal" href="cms-installation.html">CMS installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="introduction-software.html">Introduction to the software</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="howto-software.html">How to use the software</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="create-configuration-file.html">Create a configuration file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="create-network-model.html">Create a network model</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Custom propensity function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-spatial-model.html">Create a spatial model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="run-simulations.html">Run simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 
             
@@ -179,7 +177,29 @@
 
   <div class="section" id="custom-propensity-function">
 <h1>Custom propensity function<a class="headerlink" href="#custom-propensity-function" title="Permalink to this headline">¶</a></h1>
-<p>How to create a custom propensity function TBD.</p>
+<p>In tranditional compartmental modeling, the rate at which a reaction occurs obeys the law of mass action, i.e., it is directly proportional to the population of the reacting compartment(s). For example, an <a class="reference internal" href="emodl.html"><span class="doc">EMODL</span></a> SEIR model with waning immunity will contain reaction terms as the following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">reaction</span> <span class="n">exposure</span>   <span class="p">(</span><span class="n">S</span> <span class="n">I</span><span class="p">)</span> <span class="p">(</span><span class="n">E</span> <span class="n">I</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span> <span class="n">Ki</span> <span class="n">S</span> <span class="n">I</span><span class="p">))</span>
+<span class="p">(</span><span class="n">reaction</span> <span class="n">infection</span>  <span class="p">(</span><span class="n">E</span><span class="p">)</span>   <span class="p">(</span><span class="n">I</span><span class="p">)</span>   <span class="p">(</span><span class="o">*</span> <span class="n">Kl</span> <span class="n">E</span><span class="p">))</span>
+<span class="p">(</span><span class="n">reaction</span> <span class="n">recovery</span>   <span class="p">(</span><span class="n">I</span><span class="p">)</span>   <span class="p">(</span><span class="n">R</span><span class="p">)</span>   <span class="p">(</span><span class="o">*</span> <span class="n">Kr</span> <span class="n">I</span><span class="p">))</span>
+<span class="p">(</span><span class="n">reaction</span> <span class="n">waning</span>     <span class="p">(</span><span class="n">R</span><span class="p">)</span>   <span class="p">(</span><span class="n">S</span><span class="p">)</span>   <span class="p">(</span><span class="o">*</span> <span class="n">Kw</span> <span class="n">R</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>However, mass action dynamics can be too restricting in modeling a complex epidemiological system with mechanisms such as seasonal forcing, pulse vaccination, and discrete aging. CMS provides <a class="reference internal" href="emodl.html#function-list"><span class="std std-ref">a set of commonly used functions</span></a> to aid formulating custom propensity functions. Below is a part of garki model <a class="footnote-reference" href="#id2" id="id1">[1]</a> that involves seasonal forcing:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">seasonal</span> <span class="n">parameter</span>
+<span class="p">(</span><span class="n">func</span> <span class="n">C</span> <span class="p">(</span><span class="o">*</span> <span class="mf">0.2</span> <span class="p">(</span><span class="o">+</span> <span class="mf">1.01</span> <span class="p">(</span><span class="n">sin</span> <span class="p">(</span><span class="o">*</span> <span class="p">(</span><span class="o">/</span> <span class="n">time</span> <span class="mi">365</span><span class="p">)</span> <span class="mi">2</span> <span class="n">pi</span><span class="p">)))))</span>
+<span class="p">;</span> <span class="n">infection</span> <span class="n">rate</span>
+<span class="p">(</span><span class="n">func</span> <span class="n">h</span> <span class="p">(</span><span class="o">*</span> <span class="n">g</span> <span class="p">(</span><span class="o">-</span> <span class="mi">1</span> <span class="p">(</span><span class="n">exp</span> <span class="p">(</span><span class="o">/</span> <span class="p">(</span><span class="o">*</span> <span class="p">(</span><span class="o">-</span> <span class="n">C</span><span class="p">)</span> <span class="n">Y1</span><span class="p">)</span> <span class="n">totalpop</span><span class="p">)))))</span>
+
+<span class="p">(</span><span class="n">reaction</span> <span class="n">recoveryY3</span> <span class="p">(</span><span class="n">Y3</span><span class="p">)</span> <span class="p">(</span><span class="n">X3</span><span class="p">)</span> <span class="p">(</span><span class="o">/</span> <span class="p">(</span><span class="o">*</span> <span class="n">Y3</span> <span class="n">h</span><span class="p">)</span> <span class="p">(</span><span class="o">-</span> <span class="p">(</span><span class="n">exp</span> <span class="p">(</span><span class="o">/</span> <span class="n">h</span> <span class="n">r2</span><span class="p">))</span> <span class="mi">1</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><a href="#id3"><span class="problematic" id="id4">`citation for garki model used for the garki.emodl`_</span></a></td></tr>
+</tbody>
+</table>
 </div>
 
 
@@ -194,10 +214,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="run-simulations.html" class="btn btn-neutral float-right" title="Run simulations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="create-spatial-model.html" class="btn btn-neutral float-right" title="Create a spatial model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="create-network-model.html" class="btn btn-neutral" title="Create a network model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="howto-software.html" class="btn btn-neutral" title="How to use the software" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

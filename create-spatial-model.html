@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; Compartmental Modeling (CMS)  documentation</title>
+  <title>Create a spatial model &mdash; Compartmental Modeling (CMS)  documentation</title>
   
 
   
@@ -36,12 +36,21 @@
   
     <link rel="stylesheet" href="_static/tipuesearch/tipuesearch.css" type="text/css" />
   
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
 
   
         <link rel="index" title="Index"
               href="genindex.html"/>
-        <link rel="search" title="Search" href="#"/>
-    <link rel="top" title="Compartmental Modeling (CMS)  documentation" href="index.html"/> 
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Compartmental Modeling (CMS)  documentation" href="index.html"/>
+        <link rel="up" title="How to use the software" href="howto-software.html"/>
+        <link rel="next" title="Run simulations" href="run-simulations.html"/>
+        <link rel="prev" title="Custom propensity function" href="custom-propensity-function.html"/>
+
+<link href="https://fonts.googleapis.com/css?family=Lato|Montserrat|Open+Sans" rel="stylesheet">
+
+
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -91,11 +100,16 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction-modeling.html">Introduction to compartmental modeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cms-installation.html">CMS installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="introduction-software.html">Introduction to the software</a></li>
-<li class="toctree-l1"><a class="reference internal" href="howto-software.html">How to use the software</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="howto-software.html">How to use the software</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="custom-propensity-function.html">Custom propensity function</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Create a spatial model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run-simulations.html">Run simulations</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -140,10 +154,14 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Search</li>
+          <li><a href="howto-software.html">How to use the software</a> &raquo;</li>
+        
+      <li>Create a spatial model</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+            
         
       </li>
     
@@ -155,19 +173,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search
-      functionality.
-    </p>
-  </div>
-  </noscript>
+<!-- From _templates/page.html -->
 
-  
-  <div id="search-results">
-  
-  </div>
+  <div class="section" id="create-a-spatial-model">
+<h1>Create a spatial model<a class="headerlink" href="#create-a-spatial-model" title="Permalink to this headline">¶</a></h1>
+<p>Spatial structure is an important component in many disease modeling. CMS offers an easy way to specify geographic compartments. The syntax for creating a locale is <code class="docutils literal"><span class="pre">(locale</span> <span class="pre">name)</span></code>, and all  <a class="reference internal" href="Spatial Simulation Methods.html"><span class="doc">spatial solvers</span></a> support this feature.</p>
+<p>Species must be specified with the name of the local where it belongs in the following for mat: <code class="docutils literal"><span class="pre">species_name::locale_name</span></code>. The below example illustrates how locales and species are created for a spatial simulation.</p>
+<div class="highlight-lisp"><div class="highlight"><pre><span></span><span class="p">(</span><span class="nv">locale</span> <span class="nv">site-1</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">set-locale</span> <span class="nv">site-1</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">species</span> <span class="nv">A::1</span> <span class="mi">1000</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nv">locale</span> <span class="nv">site-2</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">set-locale</span> <span class="nv">site-2</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">species</span> <span class="nv">A::2</span> <span class="mi">1000</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nv">reaction</span> <span class="nv">A1-&gt;A2</span> <span class="p">(</span><span class="nv">A::1</span><span class="p">)</span> <span class="p">(</span><span class="nv">A::2</span><span class="p">)</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">D</span> <span class="nv">A::1</span><span class="p">))</span>
+<span class="p">(</span><span class="nv">reaction</span> <span class="nv">A2-&gt;A1</span> <span class="p">(</span><span class="nv">A::2</span><span class="p">)</span> <span class="p">(</span><span class="nv">A::1</span><span class="p">)</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">D</span> <span class="nv">A::2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+
+
+<div id="tipue_search_content"></div>
 
            </div>
            <div class="articleComments">
@@ -175,6 +202,15 @@
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="run-simulations.html" class="btn btn-neutral float-right" title="Run simulations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="custom-propensity-function.html" class="btn btn-neutral" title="Custom propensity function" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -218,7 +254,6 @@
       <script type="text/javascript" src="_static/tipuesearch/tipuesearch_set.js"></script>
       <script type="text/javascript" src="_static/runsearch.js"></script>
       <script type="text/javascript" src="_static/tablecollapse.js"></script>
-      <script type="text/javascript" src="_static/searchtools.js"></script>
 
   
 
@@ -234,14 +269,7 @@
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>
