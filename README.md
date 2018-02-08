@@ -1,13 +1,11 @@
 # IDM Compartmental Modeling Software
 
-Basic useful feature list:
+This software has the following features:
 
  * Multiple solvers
  * Multiple output formats
  * Simple JSON configuration
  * Text based model specification
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 Here is a sample configuration: :+1:
 
@@ -58,6 +56,6 @@ Here is a sample model file:
 
 (end-model)
 ```
+You can find additional documentation here:
 
-[GitHub repository](https://github.com/InstituteforDiseaseModeling/CompartmentalModeling)
-
+https://institutefordiseasemodeling.github.io/Documentation/cms/index.html
